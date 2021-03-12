@@ -1,0 +1,248 @@
+* {margin: 0;padding: 0;list-style-type: none;}
+video {
+    object-fit: fill! important
+}
+html,body{
+    height: 100%;
+    width: 100%;
+}
+.streamChat {
+    /* position: relative;
+    height: 100%; */
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    height: 100%;
+}
+header {
+    height: 60px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    background:#000;
+}
+.headerLeft .RoomId {
+    line-height: 60px;
+    color: #fff;
+}
+.headeRight {
+    display: flex;
+    flex-direction: row;
+}
+.headeRight #leave{
+    width: 100px;
+    outline: none;
+    box-sizing: border-box;
+    border: none;
+    color: #fff;
+    background-color: #ae4c69;
+    height: 40px;
+    align-self: center;
+}
+.streamChat .top{
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+}
+.streamChat .top .wrap {
+    flex: 1;
+    position: relative;
+}
+/* 两个视频的样式 */
+
+.videoWrap {
+    position: relative;
+    height: 100%;
+}
+.videoWrap video {
+    width: 100%;
+    height: 100%;
+}
+.big {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.small {
+    width: 30%;
+    height: 30%;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 1000;
+
+}
+.change {
+    /* background: url('https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=4188221002,2861657513&fm=26&gp=0.jpg') no-repeat center;
+    background-size: 100% 100%; */
+}
+.hide {
+    display: none;
+}
+.Closebutton {
+    position: absolute;
+    width: 120px;
+    height: 60px;
+    border-radius: 3px;
+    z-index: 10000;
+    left: 50%;
+    transform: translate(-50%, 0);
+    bottom:10%;
+}
+.Closebutton button {
+    width: 100%;
+    height: 100%;
+}
+
+
+
+/* 右边广告和聊天的样式 */
+.streamChat .top .right {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+/* 广告位置 */
+.streamChat .top .right .rightTop {
+    flex: 1;
+    display: flex;
+    flex-direction:column;
+    border-bottom: 1px solid #ccc;
+    box-sizing: border-box;
+}
+.streamChat .top .right .rightTop .title {
+    height: 60px;
+    line-height: 60px;
+    color:#959595;
+    text-indent: 1em;
+}
+.streamChat .top .right .rightTop .friendList {
+    background: #ccc;
+} 
+.friendList {
+    flex: 1;
+}
+.friendList .friendItem {
+    box-sizing: border-box;
+    padding: 4px;
+    margin-bottom: 3px;
+    display: flex;
+    flex-direction: row;
+}
+.friendItem .FriendLeft {
+    width:35px;
+    height: 35px;
+    display: flex;
+    /* flex-direction: column; */
+    align-self: center;
+}
+.friendItem .FriendLeft img {
+    width: 100%;
+}
+.friendItem .friendCenter{
+    flex: 1;
+    align-self: center;
+}
+.friendItem .friendCenter .friendName {
+    padding-left: 8px;
+}
+
+.friendItem .FriendRight {
+    width: 80px;
+    padding-left: 3px;
+    box-sizing: border-box;
+    color: #000;
+    font-size: 12px;
+    height: 35px;
+    align-self: center;
+
+}
+.mediaWrap {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.friendItem .FriendRight .videoIcon {
+    width: 30px;
+    height: 30px;
+    background: url('../images/shipintonghua.png') no-repeat center;
+    background-size:100% 100%;
+}
+.friendItem .FriendRight .audioIcon {
+    width: 30px;
+    height: 30px;
+    background: url('../images/yuyindianhua.png') no-repeat center;
+    background-size:100% 100%;
+}
+/* 聊天内容区域 */
+.streamChat .top .right .rightBottom {
+    display: flex;
+    flex-direction: column;
+    height: 350px;
+}
+.textMsgList {
+    flex: 1;
+    overflow: scroll;
+}
+.textMsgList li {
+    display: flex;
+    flex-direction: row;
+}
+.chatItem {
+    box-sizing: border-box;
+    padding: 4px;
+    margin-bottom: 3px;
+}
+.chatItem  .TextLeft {
+    width:35px;
+    height: 35px;
+    display: flex;
+    /* flex-direction: column; */
+    align-self: center;
+
+}
+.chatItem  .TextLeft img {
+    width: 100%;
+}
+.chatItem .TextRight {
+    flex: 1;
+    padding-left: 3px;
+    box-sizing: border-box;
+    color: #000;
+    font-size: 12px;
+    align-self: center;
+}
+.chatMy .TextRight{
+   order: -1;
+   padding-right: 3px;
+   text-align: right;
+}
+.textMsgInput {
+    height: 40px;
+    display: flex;
+    flex-direction: row;
+}
+.textMsgInput input {
+    flex: 1;
+    border: 1px solid #ccc;
+    color: #555;
+    box-sizing: border-box;
+    border-radius: 5px;
+    text-indent: 1em;
+
+}
+.textMsgInput button {
+    width: 70px;
+    outline: none;
+    box-sizing: border-box;
+    border: none;
+    color: #fff;
+    background-color:#4cae4c;
+}
+
+/* 分割线 */
+

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    .wrap {
+        width: 300px;
+        overflow: hidden;
+    }
+
+    .title {
+        height: 50px;
+        background: yellow;
+        text-align: center;
+    }
+
+    p {
+        height: 260px;
+        text-align: center;
+        background: green;
+        overflow: hidden;
+    }
+</style>
+
+<body>
+    <div class="wrap">
+        <div class="panpel">
+            <div class="title">项目1</div>
+            <p>这是项目1</p>
+        </div>
+        <div class="panpel">
+            <div class="title">项目1</div>
+            <p>这是项目1</p>
+        </div>
+        <div class="panpel">
+            <div class="title">项目1</div>
+            <p>这是项目1</p>
+        </div>
+    </div>
+</body>
+<script>
+    class anmition {
+        constructor(el) {
+            this.el = el
+            this.defaultHeight = this.height
+            this.timeOut = 5
+        }
+        get height() {
+            // console.log('dce',this.el,window.getComputedStyle(this.el).height.slice(0,-2)*1)
+            return window.getComputedStyle(this.el).height.slice(0,-2)*1
+        }
+        set height(height) {
+            this.el.style.height = height + 'px'
+        }
+        hide(callback) {
+            let hideID = setInterval(() => {
+                if(this.height <= 0) {
+                    clearInterval(hideID)
+                    callback && callback()
+                    return
+                }
+                this.height--
+                
+            }, this.timeOut);
+        }
+        show(callback) {
+            let showID = setInterval(() => {
+                if(this.height >= this.defaultHeight) {
+                    clearInterval(showID)
+                    callback && callback()
+                    return
+                }
+                this.height++
+                
+            }, this.timeOut);
+        }
+    }
+    class panpel extends anmition {
+        constructor(el) {
+            super(el)
+            this.el = el
+        }
+        static num = 0
+        static hideAll(arr) {
+            console.log('num',panpel.num)
+            if(panpel.num > 0) return
+            
+            arr.forEach(item => {
+                panpel.num++
+                item.hide(() => {
+                    if(panpel.num >0) {
+                        panpel.num --
+                    }
+                })
+            });
+        }
+        static hideFilter(arr,i) {
+            console.log('arr',arr,i)
+            return arr.filter((val,index) => {
+                return i!=index
+            } )
+        }
+    }
+    class target {
+        constructor(el) {
+            this.el = el
+            this.targets = el.querySelectorAll('.title')
+            this.links = el.querySelectorAll('p')
+            this.panpels = [...this.links].map(item=> new panpel(item))
+        }
+        init() {
+            this.targets.forEach((item,i) => {
+                item.addEventListener('click',()=> {
+                    this.action(this.panpels,i)
+                })
+            })
+        }
+        action(arr,i) {
+            panpel.hideAll(panpel.hideFilter(arr,i))
+            this.panpels[i].show(()=> {
+
+            })
+        }
+    }
+    new target(document.querySelector('.wrap')).init()
+</script>
+
+</html>

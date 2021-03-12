@@ -1,0 +1,100 @@
+<html>
+
+<head>
+    <title>vrdhillll</title>
+    <link rel="stylesheet" href="./stylesheets/video.css">
+</head>
+
+<body>
+    <div class="streamChat">
+        <header>
+            <div class="headerLeft">
+                <div class="RoomId">
+                    <span>房间号：</span><span>19837732939</span>
+                </div>
+            </div>
+            <div class="headeCenter"></div>
+            <div class="headeRight">
+                <button id="leave">离开此房间</button>
+            </div>
+        </header>
+        <div class="top">
+            <div class="wrap">
+                <div class="Closebutton">
+                    <button id="connserver" >Connect Sig Server</button>
+                </div>
+                <div class="videoWrap">
+                    <div class="preview big change  local">
+                        <video id="localvideo" autoplay playsinline ></video>
+                    </div>
+                    <div class="remote small change others">
+                        <video id="remotevideo" class="othersVideos" autoplay playsinline ></video>
+                    </div>
+                </div>
+            </div>
+            <div class="right">
+                <div class="rightTop">
+                    <div class="title">
+                        聊天室成员
+                    </div>
+                    <ul class="friendList">
+                        <li class="friendItem">
+                            <div class="FriendLeft">
+                                <img src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2980896150,1513192047&fm=26&gp=0.jpg" alt="">
+                            </div>
+                            <div class="friendCenter">
+                                <div class="friendName">
+                                    <span>吴彦祖</span>
+                                </div>
+                            </div>
+                            <div class="FriendRight">
+                                <div class="mediaWrap">
+                                    <div class="videoIcon"></div>
+                                    <div class="audioIcon"></div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="message rightBottom">
+                    <ul class="textMsgList">
+                        <!-- <li class="chatMy chatItem">
+                            <div class="TextLeft">
+                                <img src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2980896150,1513192047&fm=26&gp=0.jpg" alt="">
+                            </div>
+                            <div class="TextRight">
+                                <span>我eqeq</span>
+                            </div>
+                        </li>
+                        <li class="chatOthers chatItem">
+                            <div class="TextLeft">
+                                <img src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2980896150,1513192047&fm=26&gp=0.jpg" alt="">
+                            </div>
+                            <div class="TextRight">
+                                <span>别人</span>
+                            </div>
+                        </li> -->
+                    </ul>
+                    <div class="textMsgInput">
+                        <input type="text" class="inputs" placeholder="消息">
+                        <button class="sendMsg">发送</button>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+       
+
+        
+
+    </div>
+
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+    <!-- <script src="./js/client.js"></script> -->
+    <script src="./js/chat.js" type="module"></script>
+</body>
+
+</html>

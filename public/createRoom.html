@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>创建房间</title>
+</head>
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+<body>
+    <div>
+        <input type="text" placeholder="创建昵称" class="nichen">
+        <input type="text" placeholder="搜索房间号" class="roomid">
+        <button class="createRoomId">创建房间</button>
+        <button class="joinRoom">点击进房间</button>
+    </div>
+</body>
+<script>
+    class sockets {
+        constructor() {
+            console.log(this,io)
+            this.socketIo  = {}
+        }
+        init() {
+            this.socketIo = io.connect()
+        }
+        async joinRoom() {
+            if(!this.socketIo) {
+                this.init()
+            }
+            io.emit('joinRoom',(roomid)=> {
+                console.log(`进入房间好：${roomid}`)
+            })
+            io.on('joinRoom',(roomid)=>{
+                console.log('服务器返回进入roomid',roomid)
+            })
+        }
+        createRoom() {
+            if(!this.socketIo) {
+                this.init()
+            }
+            io.emit('createRoom',(roomid)=> {
+                console.log(`进入房间好：${roomid}`)
+            })
+            io.on('createRoom',(roomid)=>{
+                console.log('服务器返回进入roomid',roomid)
+            })
+        }
+    }
+    class Room extends sockets{
+        constructor(...args) {
+            // this.roomid = roomid
+            // this.name = name
+            super(...args)
+            console.log('zhixing')
+        }
+    }
+    class Target extends Room{ 
+        constructor(roomid,name,createDom,joinDom) {
+            super(roomid,name)
+            this.createDom = createDom
+            this.joinDom = joinDom
+        }
+        join() {
+            console.log('加入房间')
+        }
+        create() {
+            console.log('create')
+        }
+        static action(a,b,c,d) {
+            const tar = new Target(a,b,c,d)
+            c.addEventListener('click',() => tar.create())
+            d.addEventListener('click',() => tar.join())
+            return tar
+        }
+    }
+    const name = document.querySelector('.nichen')
+    const roomid = document.querySelector('.roomid')
+    const joind = document.querySelector('.joinRoom')
+    const create = document.querySelector('.createRoomId')
+    Target.action(roomid.value,name.value,create,joind)
+</script>
+</html>
