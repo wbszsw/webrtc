@@ -3,7 +3,7 @@ import LocalMedia from './LocalMedia'
 // import targets from './targets'
 
 /* eslint-disable */
-
+console.log(LocalMedia)
 // console.log('local', targets)
 class Chat extends LocalMedia {
     constructor(roomid, videoDom, OtherVideoArr,TextMsgListDom,friendListDom,options) {
