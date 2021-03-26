@@ -1,6 +1,7 @@
 
-'use strict'
-
+// 'use strict'
+// import Room from './Room.js'
+var Room = require('./Room')
 var http = require('http');
 var https = require('https');
 var fs = require('fs');
@@ -11,66 +12,10 @@ var serveIndex=require('serve-index');
 
 var USERCOUNT=3;
 
-// var path = require('path');
-// var cookieParser = require('cookie-parser');
-// var logger = require('morgan');
 //命令服务器
 var socketIo =require('socket.io');
 var log4js = require('log4js');
-
-
-
 var app = require('../app.js')
-
-// view engine setup
-// console.log(__dirname)
-// app.set('views', path.join('/home/rtc4/', 'views'));
-// app.set('view engine', 'ejs');
-
-// app.use(logger('dev'));
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: false }));
-// app.use(cookieParser());
-// app.use(express.static(path.join('/home/rtc4/', 'public')));
-
-// server.listen(1024, function () {
-//     console.log('Socket Open')
-// });
-
-
-// app.all('*', function(req, res, next) {  
-//   res.header("Access-Control-Allow-Origin", "*");  
-  
-//   // 'Authorization, Origin, X-Requested-With, Content-Type, Accept'
-//   res.header("Access-Control-Allow-Headers", 'Origin, X-Requested-With, Content-Type, Accept, Authorization');  
-//   res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS,HEAD");  
-//   // res.header("authorization", '*');  
-//     // res.header("Content-Type", "application/json;charset=utf-8");  
-//   if (req.method == 'options' || req.method == 'OPTIONS') {
-//       console.log('options这里')
-//       // res.send(200)
-//       res.status(200).json('返回成功');
-//   }  
-//   next();  
-// }); 
-// app.use('/', indexRouter);
-// app.use('/users', usersRouter);
-
-// // catch 404 and forward to error handler
-// app.use(function(req, res, next) {
-//   next(createError(404));
-// });
-
-// // error handler
-// app.use(function(err, req, res, next) {
-//   // set locals, only providing error in development
-//   res.locals.message = err.message;
-//   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-//   // render the error page
-//   res.status(err.status || 500);
-//   res.render('error');
-// });
 
 log4js.configure({
 	appenders:{
@@ -112,93 +57,206 @@ const options = {
 var https_server=https.createServer(options,app);
 
 //命令服务器绑定https
-var io = socketIo(https_server)
+// var io = socketIo(https_server)
 
-io.sockets.on('connection',(socket)=>{
-	logger.debug("connection");
-	console.log('开始connect')
-	//转发信息
-	socket.on('message', (room, data)=>{
-    console.log('message data',data)
-		logger.debug("message data "+socket.id+" "+room,data);
-		// socket.to(room).emit('message', room, socket.id, data)//房间内所有人,除自己外
-		socket.in(room).emit('message', room, socket.id, data)//房间内所有人,除自己外
 
-	});
-  // 文字消息
-  socket.on('textMsg',(room, data)=>{
-		socket.to(room).emit('textMsg', room, socket.id, data)//房间内所有人,除自己外
-		// socket.in(room).emit('textMsg', room, socket.id, data)//房间内所有人,除自己外
-	});
+
+// io.sockets.on('connection',(socket)=>{
+// 	logger.debug("connection");
+// 	console.log('开始connect')
+// 	//转发信息
+// 	socket.on('message', (room, data)=>{
+//     console.log('message data',data)
+// 		logger.debug("message data "+socket.id+" "+room,data);
+// 		// socket.to(room).emit('message', room, socket.id, data)//房间内所有人,除自己外
+// 		socket.in(room).emit('message', room, socket.id, data)//房间内所有人,除自己外
+
+// 	});
+//   // 文字消息
+//   socket.on('textMsg',(room, data)=>{
+// 		socket.to(room).emit('textMsg', room, socket.id, data)//房间内所有人,除自己外
+// 		// socket.in(room).emit('textMsg', room, socket.id, data)//房间内所有人,除自己外
+// 	});
 	
-	//用户加入
-	socket.on('join',(room)=>{
-    console.log('join',room)
-		logger.debug("join",",room = ", room,",socket.id = ", socket.id);
-		socket.join(room);
-		// var myRoom = io.sockets.adapter.rooms[room];
-		var myRoom = io.sockets.adapter.rooms.get(room)
+// 	//用户加入
+// 	socket.on('join',(room)=>{
+//     console.log('join',room)
+// 		logger.debug("join",",room = ", room,",socket.id = ", socket.id);
+// 		socket.join(room);
+// 		// var myRoom = io.sockets.adapter.rooms[room];
+// 		var myRoom = io.sockets.adapter.rooms.get(room)
 
-    console.log('getRoom',io.sockets.adapter.rooms.length, io.sockets.adapter.rooms.get(room))
-    console.log('nadaolme',io.sockets.adapter.rooms.get(room))
+//     console.log('getRoom',io.sockets.adapter.rooms.length, io.sockets.adapter.rooms.get(room))
+//     console.log('nadaolme',io.sockets.adapter.rooms.get(room))
 
-    // for(let item in io.sockets.adapter.rooms) {
-    //   console.log('item',item)
-    //   // if(item == room) {
-    //   //   return
-    //   // }
-    // }
-    // console.log('join',room,'qw')
-    // console.log('socket',io.sockets.adapter.rooms[room],typeof(io.sockets.adapter.rooms))
-		// var users =(myRoom)?Object.keys(myRoom.sockets).length:0;
-		var users =(myRoom)?2:0;
+//     // for(let item in io.sockets.adapter.rooms) {
+//     //   console.log('item',item)
+//     //   // if(item == room) {
+//     //   //   return
+//     //   // }
+//     // }
+//     // console.log('join',room,'qw')
+//     // console.log('socket',io.sockets.adapter.rooms[room],typeof(io.sockets.adapter.rooms))
+// 		// var users =(myRoom)?Object.keys(myRoom.sockets).length:0;
+// 		var users =(myRoom)?2:0;
 
-    console.log('多少个users',users)
-		logger.debug('the number of user in room is:'+users)
+//     console.log('多少个users',users)
+// 		logger.debug('the number of user in room is:'+users)
 		
-		//处理一对一通信
-		if (users<USERCOUNT) {
-			//给本人回信息
-			socket.emit('joined',room,socket.id);
-			if(users>1){
-				socket.to(room).emit('otherjoin',room,socket.id);
-			}
-		}else{
-			socket.leave(room);
-			socket.emit('full',room,socket.id);
-		}
+// 		//处理一对一通信
+// 		if (users<USERCOUNT) {
+// 			//给本人回信息
+// 			socket.emit('joined',room,socket.id);
+// 			if(users>1){
+// 				socket.to(room).emit('otherjoin',room,socket.id);
+// 			}
+// 		}else{
+// 			socket.leave(room);
+// 			socket.emit('full',room,socket.id);
+// 		}
 		
-		//给本人回信息
-		//socket.emit('joined',room,socket.id);
-		//给房间除自己以外所有人回
-		// socket.to(room).emit('joined',room,socket.id);
-		//给房间所有人回
-		// io.in(room).emit('joined',room,socket.id);
-		//除自己所有站点回
-		// socket.broadcast.emit('joined',room,socket.id)
-	});
+// 		//给本人回信息
+// 		//socket.emit('joined',room,socket.id);
+// 		//给房间除自己以外所有人回
+// 		// socket.to(room).emit('joined',room,socket.id);
+// 		//给房间所有人回
+// 		// io.in(room).emit('joined',room,socket.id);
+// 		//除自己所有站点回
+// 		// socket.broadcast.emit('joined',room,socket.id)
+// 	});
 
-	//用户离开
-	socket.on('leave',(room)=>{
-		var myRoom = io.sockets.adapter.rooms[room];
-		var users =(myRoom)?Object.keys(myRoom.sockets).length:0;
-		//users-1
-		logger.debug('the number of user in room is:'+(users-1));
+// 	//用户离开
+// 	socket.on('leave',(room)=>{
+// 		var myRoom = io.sockets.adapter.rooms[room];
+// 		var users =(myRoom)?Object.keys(myRoom.sockets).length:0;
+// 		//users-1
+// 		logger.debug('the number of user in room is:'+(users-1));
 		
-		socket.to(room).emit('bye',room,socket.id);
-		socket.emit('leaved',room,socket.id);
+// 		socket.to(room).emit('bye',room,socket.id);
+// 		socket.emit('leaved',room,socket.id);
 		
-		//给本人回信息
-		//socket.emit('leaved',room,socket.id);
-		//给房间除自己以外所有人回
-		//socket.to(room).emit('leaved',room,socket.id)
-		//给房间所有人回
-		//io.in(room).emit('leaved',room,socket.id);
-		//除自己所有站点回
-		//socket.broadcast.emit('leaved',room,socket.id)
-	});
+// 		//给本人回信息
+// 		//socket.emit('leaved',room,socket.id);
+// 		//给房间除自己以外所有人回
+// 		//socket.to(room).emit('leaved',room,socket.id)
+// 		//给房间所有人回
+// 		//io.in(room).emit('leaved',room,socket.id);
+// 		//除自己所有站点回
+// 		//socket.broadcast.emit('leaved',room,socket.id)
+// 	});
+// });
+
+https_server.listen(1120);
+console.log('daimaxs')
+http_server.listen(90);
+
+// const WebSocketServer = require('ws').Server;
+const WebSocketServer = require('ws');
+
+
+const wss = new WebSocketServer.Server({
+    server: https_server
+})
+//  所有房间
+// const room = {}
+// 该房间里面的用户
+// const User = []
+const clients = []
+wss.on('connection', async (wsConnect,req) => {
+    console.log('触发wss服务器，监听中~',req.url);
+	clients.push(wsConnect)
+	const room = Room.init(clients)
+	console.log('clients长度',clients.length)
+	if(parseUrl(req.url)) {
+		const roomid = parseUrl(req.url).roomid
+		const user = parseUrl(req.url).user
+		// 触发join事件
+		console.log('user',user)
+		const roomObj = await room.createRoom(roomid,{user})
+		console.log('roomObj',roomObj)
+		// if(room.hasOwnProperty(roomid)){
+		// 	// 是否存在当前房间号
+		// 	console.log(`房间号${roomid}已存在`)
+		// }else {
+		// 	console.log(`房间号${roomid}不存在，已创建`)
+		// 	room[roomid] = new Set()
+		// }
+		wsConnect.on('open',(res)=> {
+			console.log('open成功',res )
+		})
+		wsConnect.on('message', (message) => {
+			console.log(`服务器接收到：${message}`);
+			let messages = JSON.parse(message)
+			// if(messages.user) {
+				if(messages.types === 'textChat') {
+					// console.log('........',room)
+					room.textChat(roomid,messages.user,messages.textChat)
+				}
+				if(messages.types === 'leave') {
+					// room.leave(roomid,messages)
+				}
+				if(messages.types === 'disconnect') {
+					// 媒体断开链接
+				}
+				if(messages.types === 'callRtc') {
+					// webRtc 协商  直接全部广播
+					room.send(messages)
+				}
+				// 根据id call 和被call
+				if(messages.types === 'createChat') {
+					// console.log()
+					// room.send({
+					// 	type:'getAnsWer'
+					// })
+					
+				}
+				if(messages.types === 'getUser') {
+					room.send({
+						type:'getUser',
+						roomid,
+						roomObj
+					})
+				}
+				else{
+					// webRtc 协商  直接全部广播
+					room.send(messages)
+				}
+				// room[roomid].add(messages.user)
+
+				// const obj = {
+				// 	type:'joinRoom',
+				// 	user:'vister'
+				// }
+				// wsConnect.send(`${JSON.stringify(obj)}`, (err) => {
+				// 	if (err) {
+				// 		console.log(`服务器错误：${err}`);
+				// 	}
+				// });
+			// }
+			// console.log('数据结合', room)
+			
+		});
+	} else {
+		console.log('wss服务发现不明攻击者...')
+	}
+
 });
 
-https_server.listen(1114);
-console.log('daimaxs')
-http_server.listen(83);
+function parseUrl(url) {
+	let obj = {}
+	let urlArr = url.split('/')
+	if(urlArr[1]!=='webRtc') {
+		return false
+	}else if(urlArr[2].substring(0,6) === 'roomid') {
+		const roomid = urlArr[2].slice(7)
+		obj.roomid = roomid
+		if(urlArr[3].substring(0,4) === 'user') {
+			const user = urlArr[3].slice(5)
+			obj.user = user
+		}
+		return obj
+	}else {
+		return false
+	}
+	
+}

@@ -1,6 +1,6 @@
 import Chat from './Chat'
 class Targets {
-    constructor(roomid, textMsgDom, submitDom, LocalStreamDom, otherStreamArr, leaveDom, joinDom, TextMsgListDom, friendListDom,io) {
+    constructor(roomid, textMsgDom, submitDom, LocalStreamDom, otherStreamArr, leaveDom, joinDom, TextMsgListDom, friendListDom,io,ws) {
         // 文本input dom
         this.textMsgDom = textMsgDom
         // 文本消息的发送按钮
@@ -17,6 +17,7 @@ class Targets {
         // 房间人全部展示
         this.friendListDom = friendListDom
         this.io = io
+        this.ws = ws
         // 其他的otherStream集合  是个数组类型（防止以后改成多个）
         // this.otherPeople = [...otherStreamArr].map((item) => {
         //     return Chat.joinRoom(otherStreamArr)
@@ -30,7 +31,7 @@ class Targets {
         return this.My.textMsg(this.textMsgDom.value)
     }
     async join(options={}) {
-        this.My = await Chat.joinRoom(this.roomid, this.io, this.textMsgDom.value, this.LocalStreamDom, this.otherStreamArr, this.TextMsgListDom,this.friendListDom,options)
+        this.My = await Chat.joinRoom(this.roomid, this.io, this.textMsgDom.value, this.LocalStreamDom, this.otherStreamArr, this.TextMsgListDom,this.friendListDom,options,this.ws)
         return this.My
     }
     leave() {
@@ -56,41 +57,42 @@ class Targets {
     }
     addEvents(dom) {
         // const that = this
-        if(dom === this.friendListDom) {
-            const friendArr = [...dom.querySelectorAll('li')]
-            friendArr.map((item => {
-                const friendAudio = item.querySelector('.audioIcon')
-                const friendVudio = item.querySelector('.videoIcon')
-                if(!this.My) {
-                    console.log('还未初始化....')
-                }else {
-                    friendAudio.addEventListener('click',() => {
-                        this.join({
-                            video:false,
-                            audio:true
-                        })
-                    })
-                    friendVudio.addEventListener('click',() => {
-                        this.join({
-                            video:true,
-                            audio:true
-                        })
-                    })
-                }
+        console.log('dom',dom)
 
-            }))
-        }else {
-            // console.log('dom',dom)
-            dom.addEventListener('click', () => {
-                if (dom === this.submitDom) {
-                    this.submitText().then(() => this.textMsgDom.value = '')
-                } else if (dom === this.leaveDom) {
-                    this.leave()
-                } else if (dom === this.joinDom) {
-                    this.join()
-                }
-            }) 
-        }
+        // if(dom === this.friendListDom) {
+        //     const friendArr = [...dom.querySelectorAll('li')]
+        //     friendArr.map((item => {
+        //         const friendAudio = item.querySelector('.audioIcon')
+        //         const friendVudio = item.querySelector('.videoIcon')
+        //         if(!this.My) {
+        //             console.log('还未初始化....')
+        //         }else {
+        //             friendAudio.addEventListener('click',() => {
+        //                 this.join({
+        //                     video:false,
+        //                     audio:true
+        //                 })
+        //             })
+        //             friendVudio.addEventListener('click',() => {
+        //                 this.join({
+        //                     video:true,
+        //                     audio:true
+        //                 })
+        //             })
+        //         }
+
+        //     }))
+        // }else {
+        //     dom.addEventListener('click', () => {
+        //         if (dom === this.submitDom) {
+        //             this.submitText().then(() => this.textMsgDom.value = '')
+        //         } else if (dom === this.leaveDom) {
+        //             this.leave()
+        //         } else if (dom === this.joinDom) {
+        //             this.join()
+        //         }
+        //     }) 
+        // }
     }
     static appendTextMsg(msg,type) {
         if(!msg) return false

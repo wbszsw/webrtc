@@ -1,9 +1,9 @@
 <template>
-  <div class="home streamChat">
+  <div class="home streamChat" v-if="socket">
     <Header roomId="99789898989" ref="HeaderDom" />
     <div class="top">
-      <videoChat ref="videoChat" />
-      <textChat ref="textChatDom" />
+      <videoChat ref="videoChat" :newSocket = socket  :pubSub = pubSub />
+      <textChat ref="textChatDom" :newSocket= socket :pubSub = pubSub />
     </div>
     <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
   </div>
@@ -15,62 +15,59 @@
 import Header from "@/components/header.vue";
 import videoChat from "@/components/videoChat.vue";
 import textChat from "@/components/textChat.vue";
-import targets from "@/utils/targets.js";
-import io from "@/utils/io.js"
+// import targets from "@/utils/targets.js";
+// import io from "@/utils/io.js"
+import websocket from '../utils/addeventLister'
+// 观察者模式
+import Subject from '../utils/observeSubject';
+// 发布订阅者模式
+import pubSub from'../utils/pubSub'
+
 export default {
   name: "Home",
   components: {
     Header,
     videoChat,
     textChat,
+    friendList:{}
     // HelloWorld
+  },
+  data() {
+    return {
+      socket:null,
+      user:null,
+      friendList:null,
+      pubSub
+      // ws:new WebSocket("wss://127.0.0.1:1114/roomid=12345678")
+    }
   },
   methods: {
     init() {
-      const textMsgDom = this.$refs.textChatDom.$refs.textMsgDom
-      const subMitDom = this.$refs.textChatDom.$refs.subMitDom
-      const LocalStreamDom = this.$refs.videoChat.$refs.LocalStreamDom
-      const othersVideoDomArr = [this.$refs.videoChat.$refs.othersVideoDomArr]
-      const leaveDom = this.$refs.HeaderDom.$refs.leaveDom
-      const joinDom = this.$refs.videoChat.$refs.joinDom
-      // 文字消息 列表
-      const textMsgList = this.$refs.textChatDom.$refs.textMsgList
-      // 朋友列表
-      const friendList = this.$refs.textChatDom.$refs.friendList
-      // console.log(textMsgDom,
-      //   subMitDom,
-      //   LocalStreamDom,
-      //   othersVideoDomArr,
-      //   leaveDom,
-      //   joinDom,
-      //   textMsgList,
-      //   friendList)
-      // const io = {
-      //   connect() {
-
-      //   }
-      // }
-      const targetObj = targets.init(
+      const socket = websocket.init(
         "123456789",
-        textMsgDom,
-        subMitDom,
-        LocalStreamDom,
-        othersVideoDomArr,
-        leaveDom,
-        joinDom,
-        textMsgList,
-        friendList,
-        io
+        this.user,
+        {
+          video: true,
+          audio: true
+        }
       );
-      targetObj.join({
-        video:false,
-        audio:true
-      },io);
+      this.socket = socket
+      this.socket.initPubsub(this.pubSub)
     },
   },
-  mounted() {
-    // this.init()
-    // console.log("ref", this.$refs.videoChat1.$refs.videoChatDom);
+  mounted(){
+    // console.log('Subject',Subject)
+    // Subject.init()
+    // console.log('.....发布订阅者模式')
+
+    // pubSub.addEvent('shuijue',(time)=> {
+    //   console.log(`睡觉:${time}`)
+    // })
+    // pubSub.publish('chifan','16.00')
+    // pubSub.publish('shuijue','19.00')
+    this.user = this.$route.query.user
+    console.log(this.user,this.$route.query)
+    this.init()
   },
 };
 </script>

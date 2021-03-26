@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+function parseUrl(url) {
+	let obj = {}
+	let urlArr = url.split('/')
+	if(urlArr[1]!=='webRtc') {
+		return false
+	}else if(urlArr[2].substring(0,6) === 'roomid') {
+		const roomid = urlArr[2].slice(7)
+		obj.roomid = roomid
+		if(urlArr[3].substring(0,4) === 'user') {
+			const user = urlArr[3].slice(5)
+			obj.user = user
+		}
+		return obj
+	}else {
+		return false
+	}
+	
+}
+console.log(parseUrl("/webRtc/roomid=123456789/user='312312'"))
+</script>
+</html>

@@ -8,7 +8,7 @@ class LocalMedia {
         video: true,
         audio: true
     }
-    constructor(videoDom, OtherVideoArr,options) {
+    constructor(options) {
         // ice 信令转发服务器
         this.pcConfig = {
             'iceServers': [{
@@ -17,8 +17,8 @@ class LocalMedia {
                 'username': 'huang'
             }]
         }
-        this.videoDom = videoDom
-        this.OtherVideoArr = OtherVideoArr
+        this.videoDom = null
+        this.OtherVideoArr = null
         this.pc = null,
         this.localOptions = options
     }
@@ -40,7 +40,10 @@ class LocalMedia {
     set otherOptions(options) {
         this._othersOptions = options
     }
-    async init() {
+    async init(local,other) {
+        this.videoDom = local
+        this.OtherVideoArr =other
+        console.log(local,other)
         const that = this
         if (!navigator.mediaDevices ||
             !navigator.mediaDevices.getUserMedia) {
@@ -71,21 +74,30 @@ class LocalMedia {
         }
     }
     // webRtc RTCPeerConnection 流
-    createPeerConnection = () => {
+    createPeerConnection = (obj,fn) => {
+        console.log('.......................func createPeerConnection')
         const that = this
         if (!that.pc) {
             this.pc = new RTCPeerConnection(this.pcConfig)
+            console.log('this.pc',this.pc)
             this.pc.onicecandidate = (e) => {
+                console.log('element',e)
                 if (e.candidate) {
-                    that.sendMessage(this.roomid, {
-                        type: 'candidate',
+                    // that.sendMessage(this.roomid, {
+                    //     type: 'candidate',
+                    //     label: e.candidate.sdpMLineIndex,
+                    //     id: e.candidate.sdpMid,
+                    //     candidate: e.candidate.candidate
+                    // });
+                    fn({type: 'candidate',
+                        types:'webRtc',
                         label: e.candidate.sdpMLineIndex,
                         id: e.candidate.sdpMid,
-                        candidate: e.candidate.candidate
-                    });
+                        candidate: e.candidate.candidate},obj)
                 }
             }
             this.pc.ontrack = (e) => {
+                console.log('ontrack',e)
                 this.OtherVideoArr[0].srcObject = e.streams[0]
             }
         }
@@ -99,6 +111,7 @@ class LocalMedia {
             return;
         }
         if (this.localStream) {
+            console.log('localStream',this.localStream)
             this.localStream.getTracks().forEach((track) => {
                 this.pc.addTrack(track, this.localStream)
             })
@@ -124,18 +137,19 @@ class LocalMedia {
         return Promise.resolve()
     }
     // getOffer 
-    getOffer = (desc) => {
+    getOffer = (desc,obj,fn) => {
         this.pc.setLocalDescription(desc)
-        this.sendMessage(this.roomid, desc)
+        fn(desc,obj)
+        // this.sendMessage(this.roomid, desc)
         // return Promise.resolve()
     }
     handleOfferError = (err) => {
         console.error('Failed to get Offer!', err);
     }
     // call 接收远端流通道
-    async call() {
+    async callRtc(state,obj,fn) {
         const that = this
-        if (that.state === 'joined_conn') {
+        if (state === 'joined_conn') {
             if (that.pc) {
                 console.log('this.pc ', that.pc)
                 const options = {
@@ -144,16 +158,17 @@ class LocalMedia {
                 }
                 const offer = await that.pc.createOffer(options)
                 try{
-                    await that.getOffer(offer)
+                    await that.getOffer(offer,obj,fn)
                 }catch(err) {
                     that.handleOfferError(err)
                 }
             }
         }
     }
-    async getAnswer(desc) {
+    async getAnswer(desc,obj,fn) {
         await this.pc.setLocalDescription(desc);
-        await this.sendMessage(this.roomid, desc);
+        fn(desc,obj)
+        // await this.sendMessage(this.roomid, desc);
     }
 
 }

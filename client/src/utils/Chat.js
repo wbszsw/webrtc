@@ -1,19 +1,20 @@
 // import targets from './targets'
 import LocalMedia from './LocalMedia'
 // import targets from './targets'
-
+import addEvent from './addeventLister'
 /* eslint-disable */
 console.log(LocalMedia)
 // console.log('local', targets)
 class Chat extends LocalMedia {
-    constructor(roomid, videoDom, OtherVideoArr,TextMsgListDom,friendListDom,options) {
-        super(videoDom, OtherVideoArr,options)
+    constructor(roomid,options) {
+        super(options)
         this.roomid = roomid
         this.socket = null
         this.state = null
-        this.TextMsgListDom = TextMsgListDom
-        this.friendListDom = friendListDom
-
+        this.TextMsgListDom = ''
+        this.friendListDom = ''
+        // 没办法又要来发布订阅者模式来.....
+        this.pubSub = {}
     }
     static appendTextMsg(msg,type) {
         if(!msg) return false
@@ -39,9 +40,18 @@ class Chat extends LocalMedia {
         li.appendChild(divRight)
         return li
     }
+    initPubSub(obj) {
+        this.pubSub = obj
+        // 有些local的回调   没办法得拿
+        // this.pubSub.addEvent('localMediaMessage',(msg)=> {
+        //     if(msg){
+        //         this.chatArr.push(JSON.parse(msg))
+        //     }
+        // })
+    }
     // 加入
     join = () => {
-        this.socket.emit('join', this.roomid)
+        // this.socket.emit('join', this.roomid)
         return Promise.resolve()
     }
     // 离开
@@ -58,8 +68,28 @@ class Chat extends LocalMedia {
     connect = (io) => {
         console.log(`welcome to socket connect`)
         try {
-            const socket = io.connect()
-            this.socket = socket
+            // const socket = io.connect('https://127.0.0.1:1114',{
+            //     autoConnect: false
+            // })
+            // const socket = io.connect('wss://127.0.0.1:1114')
+            // const socket = new WebSocket('wss://127.0.0.1:1114/');
+            // var ws = new WebSocket("wss://127.0.0.1:1114/roomid=12345678");
+            // addEvent.init(this.ws)
+            // ws.onopen = function(evt) { 
+            //     console.log("Connection open ..."); 
+            //     ws.send("H!");
+            // };
+
+            // ws.onmessage = function(evt) {
+            //     console.log( "Received Message: " + evt.data);
+            // ws.close();
+            // };
+
+            // ws.onclose = function(evt) {
+            //     console.log("Connection closed.");
+            // };  
+        
+            // this.socket = ws
             return Promise.resolve()
         } catch (err) {
             return Promise.reject(err)
@@ -80,80 +110,80 @@ class Chat extends LocalMedia {
         const that = this
         if (that.socket) {
             const socket = that.socket
-            socket.on('textMsg', (roomid, socketid, data) => {
-                if(roomid == this.roomid) {
-                    const chatDom = Chat.appendTextMsg(data,false)
-                    if(chatDom) {
-                        this.TextMsgListDom.appendChild(chatDom)
-                    }
-                }
-            })
-            socket.on('joined', async (roomid, id) => {
-                console.log('joined')
-                that.state = 'joined'
-                await that.createPeerConnection()
-            })
-            socket.on('otherjoin', async (roomid, id) => {
-                console.log('...otherjoin')
-                if (that.state === 'joined_unbind') {
-                    await that.createPeerConnection()
-                }
-                that.state = 'joined_conn'
-                that.call()
-            })
-            socket.on('full', (roomid, id) => {
+            // socket.on('textMsg', (roomid, socketid, data) => {
+            //     if(roomid == this.roomid) {
+            //         const chatDom = Chat.appendTextMsg(data,false)
+            //         if(chatDom) {
+            //             this.TextMsgListDom.appendChild(chatDom)
+            //         }
+            //     }
+            // })
+            // socket.on('joined', async (roomid, id) => {
+            //     console.log('joined')
+            //     that.state = 'joined'
+            //     await that.createPeerConnection()
+            // })
+            // socket.on('otherjoin', async (roomid, id) => {
+            //     console.log('...otherjoin')
+            //     if (that.state === 'joined_unbind') {
+            //         await that.createPeerConnection()
+            //     }
+            //     that.state = 'joined_conn'
+            //     that.call()
+            // })
+            // socket.on('full', (roomid, id) => {
                 
-                that.closePeerConnection()
-                that.closeLocalMedia()
-                that.state = 'leaved'
-                console.log('房间满了 进不去')
-            })
-            socket.on('leaved', (roomid, id) => {
-                that.state = 'leaved';
-                that.socket.disconnect();
-                console.log('挂了  撤')
-            })
-            socket.on('bye', (roomid, id) => {
-                console.log('bye')
-                that.state = 'joined_unbind';
-                that.closePeerConnection();
-            });
-            socket.on('disconnect', (socket) => {
-                console.log('disConnect')
-                if (!(that.state === 'leaved')) {
-                    that.closePeerConnection();
-                    that.closeLocalMedia();
-                }
-                that.state = 'leaved';
+            //     that.closePeerConnection()
+            //     that.closeLocalMedia()
+            //     that.state = 'leaved'
+            //     console.log('房间满了 进不去')
+            // })
+            // socket.on('leaved', (roomid, id) => {
+            //     that.state = 'leaved';
+            //     that.socket.disconnect();
+            //     console.log('挂了  撤')
+            // })
+            // socket.on('bye', (roomid, id) => {
+            //     console.log('bye')
+            //     that.state = 'joined_unbind';
+            //     that.closePeerConnection();
+            // });
+            // socket.on('disconnect', (socket) => {
+            //     console.log('disConnect')
+            //     if (!(that.state === 'leaved')) {
+            //         that.closePeerConnection();
+            //         that.closeLocalMedia();
+            //     }
+            //     that.state = 'leaved';
 
-            });
-            socket.on('message', async (roomid, id, data) => {
-                //媒体协商
-                if (data) {
-                    if (data.type === 'offer') {
-                        await that.pc.setRemoteDescription(new RTCSessionDescription(data));
-                        const offers = await that.pc.createAnswer()
-                        try {
-                            await that.getAnswer(offers)
-                        }catch(err) {
-                            that.handleAnswerError(err)
-                        }
-                    } else if (data.type === 'answer') {
-                        console.log("reveive client message=====>", data);
-                        that.pc.setRemoteDescription(new RTCSessionDescription(data));
-                    } else if (data.type === 'candidate') {
-                        const candidate = new RTCIceCandidate({
-                            sdpMLineIndex: data.label,
-                            candidate: data.candidate
-                        });
-                        that.pc.addIceCandidate(candidate);
+            // });
+            // socket.on('message', async (roomid, id, data) => {
+            //     //媒体协商
+            //     if (data) {
+            //         if (data.type === 'offer') {
+            //             await that.pc.setRemoteDescription(new RTCSessionDescription(data));
+            //             const offers = await that.pc.createAnswer()
+            //             try {
+            //                 await that.getAnswer(offers)
+            //             }catch(err) {
+            //                 that.handleAnswerError(err)
+            //             }
+            //         } else if (data.type === 'answer') {
+            //             console.log("reveive client message=====>", data);
+            //             that.pc.setRemoteDescription(new RTCSessionDescription(data));
+            //         } else if (data.type === 'candidate') {
+            //             const candidate = new RTCIceCandidate({
+            //                 sdpMLineIndex: data.label,
+            //                 candidate: data.candidate
+            //             });
+            //             that.pc.addIceCandidate(candidate);
 
-                    } else {
-                        console.error('the message is invalid!', data)
-                    }
-                }
+            //         } else {
+            //             console.error('the message is invalid!', data)
+            //         }
+            //     }
 
-            });
+            // });
             return
         } else {
             return Promise.reject('peleese first send socketio!')
@@ -177,7 +207,7 @@ class Chat extends LocalMedia {
         if (!this.socket) {
             this.joinRoom()
         }
-        this.socket.emit('textMsg', this.roomid, val)
+        // this.socket.emit('textMsg', this.roomid, val)
         const chatDom = Chat.appendTextMsg(val,true)
         if(chatDom) {
             this.TextMsgListDom.appendChild(chatDom)

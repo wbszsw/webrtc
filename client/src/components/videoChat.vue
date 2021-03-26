@@ -1,7 +1,7 @@
 <template>
   <div class="wrap" ref='videoChatDom'>
     <div class="Closebutton">
-      <button id="connserver" ref="joinDom">Connect Sig Server</button>
+      <!-- <button id="connserver" ref="joinDom" @click="createWebRtc()">Connect Sig Server</button> -->
     </div>
     <div class="videoWrap">
       <div class="preview big change local">
@@ -14,7 +14,26 @@
   </div>
 </template>
 <script>
-export default {};
+
+export default {
+  props:['newSocket','pubSub'],
+  data() {
+    return {}
+  },
+  methods:{
+    createWebRtc() {
+      const local = document.querySelector('#localvideo')
+      const other = [document.querySelector('#remotevideo')]
+      this.newSocket.openWebRtc(local,other)
+    }
+  },
+  mounted() {
+        this.$nextTick(()=> {
+        console.log('newSocket', this.newSocket)
+
+      })
+  },
+};
 </script>
 <style lang="less" scoped>
 .wrap {

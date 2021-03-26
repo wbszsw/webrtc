@@ -38866,3 +38866,21 @@
 16:10:21 DEBUG - the number of user in room is:2
 16:47:13 DEBUG - connection
 19:26:13 DEBUG - connection
+19:19:08 DEBUG - connection
+19:19:08 DEBUG - join ,room =  123456789 ,socket.id =  V9--Rqm0WwizbpVFAAAB
+19:19:08 DEBUG - the number of user in room is:2
+19:29:06 DEBUG - connection
+19:29:06 DEBUG - join ,room =  123456789 ,socket.id =  XKGPydgx-YjaTVC9AAAF
+19:29:06 DEBUG - the number of user in room is:2
+19:34:01 DEBUG - connection
+19:34:01 DEBUG - join ,room =  123456789 ,socket.id =  -zdMekeL_D16IdO9AABH
+19:34:01 DEBUG - the number of user in room is:2
+19:34:42 DEBUG - connection
+19:34:42 DEBUG - join ,room =  123456789 ,socket.id =  DH5ptE9xXDkN6SmSAABR
+19:34:42 DEBUG - the number of user in room is:2
+19:34:57 DEBUG - connection
+19:34:57 DEBUG - join ,room =  123456789 ,socket.id =  8Q-M0yL2GOBBZmqEAABW
+19:34:57 DEBUG - the number of user in room is:2
+14:12:25 DEBUG - connection
+14:12:26 DEBUG - join ,room =  123456789 ,socket.id =  ZgfUEE1tz8zA2tolAABw
+14:12:26 DEBUG - the number of user in room is:2
