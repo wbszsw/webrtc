@@ -20,7 +20,7 @@ class addEvent{
         this.to = ''
         // console.log('123123',`wss://127.0.0.1:1115/webRtc/roomid=${roomid}/user=${user}`)
         // const ws = new WebSocket(`wss://${window.location.host}/webRtc/roomid=${roomid}/user=${user}`)
-        const ws = new WebSocket(`wss://1.15.43.45:1120/webRtc/roomid=${roomid}/user=${user}`)
+        const ws = new WebSocket(`wss://localhost:1120/webRtc/roomid=${roomid}/user=${user}`)
 
         this.ws = ws
         this.Chat = null
